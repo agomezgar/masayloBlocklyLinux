@@ -414,10 +414,56 @@ return;
 			return
 		}
 		if ( localStorage.getItem('verif') == "false" ){
-			messageDiv.style.color = '#000000'
+			messageDiv.innerHTML='No había compilado primero. Un momentito...';
+			btn_close_message.style.display = "inline"
+			if (localStorage.getItem('content') == "off") {
+				var data = editor.getValue()
+			} else {
+				var data = $('#pre_previewArduino').text()
+			}
+			if(process!="win32"){
+	
+				var dir=homedir+'/.masaylo';
+				if (!fs.existsSync(dir)){
+			
+			messageDiv.innerHTML='Espere unos segundos y vuelva a intentar compilar';
+			btn_close_message.style.display = "inline"
+			
+			//creaMasaylo().then(copiaArchivosCompilacion().then(actualizaTarjetasArduino().then(extraeLibrerias().then(terminado(data)))));
+			instalarArduino(callback1, callback2, callback3,callback4,callback5);
+			
+			return;	
+			}
+			
+			}
+/* 			messageDiv.style.color = '#000000'
 			messageDiv.innerHTML = Blockly.Msg.verif
 			btn_close_message.style.display = "inline"
-			return
+			return */
+
+			fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err){
+				if (err) return console.log('error nuevo'+homedir+'/.masaylo/arduino/sketch/sketch.ino')
+			})
+			exec('./verify.sh ' + carte, {cwd: homedir+'/.masaylo/arduino/'}, function(err, stdout, stderr){
+				if (err) console.log('err0r: ' +carte);
+				if (stderr) {
+					fs.realpath(homedir+'.masaylo/arduino/sketch/sketch.ino' , function(err, path){
+
+						var erreur = stderr.toString().replace("exit status 1","")
+						var error = erreur.replace(/error:/g,"").replace(/token/g,"")
+						var errors = error.split(path)
+						messageDiv.style.color = '#ff0000'
+						messageDiv.innerHTML = "ERROR DE COMPILACIÓN"
+						errors.forEach(function(e){
+							messageDiv.innerHTML += e + "<br>"+carte+"<br>"
+						})
+						btn_close_message.style.display = "inline"
+					})
+					return
+				}
+				localStorage.setItem('detail', stdout.toString())
+			//	itsOK(0)
+			})
 		}
 		messageDiv.style.color = '#000000'
 		messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
