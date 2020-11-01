@@ -116,6 +116,8 @@ function terminado(){
 
 }
 window.addEventListener('load', function load(event){
+	var quitDiv = '<button type="button" class="close" data-dismiss="modal" aria-label="Close">&#215;</button>'
+
 	var window = remote.getCurrentWindow()
 	if(!window.isMaximized())window.maximize()
 	function itsOK(value){
@@ -400,7 +402,11 @@ return;
 		localStorage.setItem("verif",true)
 	})
 	$('#btn_flash').on('click', function(){
-		var data = editor.getValue()
+		if (localStorage.getItem('content') == "off") {
+			var data = editor.getValue()
+		} else {
+			var data = $('#pre_previewArduino').text()
+		}
 
 		var carte = localStorage.getItem('card')
 		var prog = profile[carte].prog
@@ -413,58 +419,60 @@ return;
 			btn_close_message.style.display = "inline"
 			return
 		}
+		var dir=homedir+'/.masaylo';
+	if (!fs.existsSync(dir)){
+
+messageDiv.innerHTML='Espere unos segundos y vuelva a intentar compilar';
+btn_close_message.style.display = "inline"
+
+//creaMasaylo().then(copiaArchivosCompilacion().then(actualizaTarjetasArduino().then(extraeLibrerias().then(terminado(data)))));
+instalarArduino(callback1, callback2, callback3,callback4,callback5);
+
+return;	
+}
 		if ( localStorage.getItem('verif') == "false" ){
-			messageDiv.innerHTML='No había compilado primero. Un momentito...';
-			btn_close_message.style.display = "inline"
-			if (localStorage.getItem('content') == "off") {
-				var data = editor.getValue()
+			messageDiv.style.color = '#000000'
+		messageDiv.innerHTML = Blockly.Msg.check + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err){
+			if (err) return console.log('error nuevo'+homedir+'/.masaylo/arduino/sketch/sketch.ino')
+		})
+		exec('./verify.sh ' + carte, {cwd: homedir+'/.masaylo/arduino/'}, function(err, stdout, stderr){
+			if (stderr) {
+			rech=RegExp('token')
+			if (rech.test(stderr)){
+				messageDiv.style.color = '#ff0000'
+				messageDiv.innerHTML = Blockly.Msg.error + quitDiv
 			} else {
-				var data = $('#pre_previewArduino').text()
+				messageDiv.style.color = '#ff0000'
+				messageDiv.innerHTML = err.toString() + quitDiv
 			}
-			if(process!="win32"){
-	
-				var dir=homedir+'/.masaylo';
-				if (!fs.existsSync(dir)){
-			
-			messageDiv.innerHTML='Espere unos segundos y vuelva a intentar compilar';
-			btn_close_message.style.display = "inline"
-			
-			//creaMasaylo().then(copiaArchivosCompilacion().then(actualizaTarjetasArduino().then(extraeLibrerias().then(terminado(data)))));
-			instalarArduino(callback1, callback2, callback3,callback4,callback5);
-			
-			return;	
-			}
-			
-			}
-/* 			messageDiv.style.color = '#000000'
-			messageDiv.innerHTML = Blockly.Msg.verif
-			btn_close_message.style.display = "inline"
-			return */
-
-			fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err){
-				if (err) return console.log('error nuevo'+homedir+'/.masaylo/arduino/sketch/sketch.ino')
-			})
-			exec('./verify.sh ' + carte, {cwd: homedir+'/.masaylo/arduino/'}, function(err, stdout, stderr){
-				if (err) console.log('err0r: ' +carte);
-				if (stderr) {
-					fs.realpath(homedir+'.masaylo/arduino/sketch/sketch.ino' , function(err, path){
-
-						var erreur = stderr.toString().replace("exit status 1","")
-						var error = erreur.replace(/error:/g,"").replace(/token/g,"")
-						var errors = error.split(path)
-						messageDiv.style.color = '#ff0000'
-						messageDiv.innerHTML = "ERROR DE COMPILACIÓN"
-						errors.forEach(function(e){
-							messageDiv.innerHTML += e + "<br>"+carte+"<br>"
-						})
-						btn_close_message.style.display = "inline"
-					})
-					return
-				}
-				localStorage.setItem('detail', stdout.toString())
-			//	itsOK(0)
-			})
+			return
 		}
+		messageDiv.style.color = '#009000'
+		messageDiv.innerHTML = Blockly.Msg.check + ': OK' + quitDiv
+	
+		messageDiv.style.color = '#000000'
+		messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		console.log('grabando hex');
+		var dir2=homedir+('/.masaylo/arduino/flash.sh ');
+		exec(dir2 + com+ ' ' + carte , {cwd: homedir+'/.masaylo/arduino'} , function(err, stdout, stderr){
+			console.log("Puerto: "+com)
+			var erreur = stderr.toString().replace(/##################################################/g,"").replace(/|/g,"")
+			var errors = erreur.split("avrdude:")
+			localStorage.setItem('detail', errors)
+			if (err) {
+				console.log('error flasheando');
+				messageDiv.style.color = '#ff0000'
+				messageDiv.innerHTML = err.toString() + "<br> "
+				btn_close_message.style.display = "inline"
+				return
+			}
+			itsOK(1)
+		})
+	})
+		localStorage.setItem("verif",false)
+		return
+	}
 		messageDiv.style.color = '#000000'
 		messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
 		if ( prog == "python" ) {
