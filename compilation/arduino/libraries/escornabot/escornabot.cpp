@@ -25,10 +25,10 @@ V 0.13 (07/03/2018): tercera versión del programa, incorpora control de motores
 	int coilPosition=0;// devuelve la posición de la bobina en cada paso (4 posiciones)
 	int nSteps=4;//numero de pasos que da por ciclo completo
 	int tstep1rpm=29297;//velocidad en rpm, 29297 es el nº de microsegundos que tardaría en dar 1 paso a 1rpm, 60/2048 y pasarlo a microsegundos
-	int buzz=10;
+
 /*Pinout*/
 	const int pinMotor[8]={2,3,4,5,6,7,8,9};//pines de motores
-
+	const int buzz = 10; //pin del zumbador	
 	const int led[4] = {14,15,16,17}; // 1 Azul, blue;2 Rojo, red;3 Amarillo, yellow;4 Verde, green
 	const int pushButtons = A7; //Es una variable analógica. En un circuito paralelo que en función de la tecla que pulsemos obtenemos un valor analógico distinto
 
