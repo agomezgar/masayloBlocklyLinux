@@ -200,7 +200,7 @@ var profile = {
 		build: "nano",
 		type: "arduino",
 		micro:"avr",
-		cpu: "atmega328p",
+		cpu: "atmega328",
 		speed: "115200",
 		prog: "arduino",
 		usb: "mini USB",
