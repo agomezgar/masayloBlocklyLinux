@@ -21,11 +21,18 @@ Blockly.Blocks['emptyVar'] = {
         });
     }
 };
-Blockly.Arduino['emptyVar'] = function(block) {
+/* Blockly.Arduino['emptyVar'] = function(block) {
     var value = block.getFieldValue('VAR');
     console.log("Variable: "+value);
     var code = '<meta charset=\\"UTF-8\\">");\n';
     code += '<title>'+looseEscape(value)+'</title>");\n';
+    return code
+}; */
+Blockly.Arduino['emptyVar'] = function(block) {
+    var value = block.getFieldValue('VAR');
+    //console.log("Variable: "+value);
+    
+    var code=')=====\"+'+value+'+R\"=====(\n';
     return code
 };
 Blockly.Python['emptyVar'] = function(block) {
@@ -224,9 +231,9 @@ Blockly.Blocks['link'] = {
 };
 Blockly.Arduino['link'] = function(block){
     var text = Blockly.Arduino.statementToCode(block, 'content');
-    var link = URLInput(block.getFieldValue('target'));
+    var link = block.getFieldValue('target');
     var block_modifier = Blockly.Arduino.statementToCode(block, 'modifier', Blockly.Arduino.ORDER_ATOMIC);
-    return '<a href=\\"' + link + '\\" target=\\"_blank\\"' + block_modifier + '>' + text + '</a>'
+    return '<a href=\"' + link + '\" target=\"_blank\"' + block_modifier + '>' + text + '</a>'
 };
 Blockly.Python['link'] = function(block){
     var text = Blockly.Python.statementToCode(block, 'content');
@@ -717,7 +724,21 @@ function looseEscape(input) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/'/g, "&#039;")
+        .replace(/á/g, "&aacute;")
+        .replace(/é/g, "&eacute;")
+        .replace(/í/g, "&iacute;")
+        .replace(/ó/g, "&oacute;")
+        .replace(/ú/g, "&uacute;")
+        .replace(/Á/g, "&Aacute;")
+        .replace(/É/g, "&Eacute;")
+        .replace(/Í/g, "&Iacute;")
+        .replace(/Ó/g, "&Oacute;")
+        .replace(/Ú/g, "&Uacute;")
+        .replace(/Ñ/g, "&Ntilde;")
+        .replace(/ñ/g, "&ntilde;")
+        .replace(/Ú/g, "&Uacute;")
+        .replace(/º/g,"&deg;");
 }
 function CSSEscape(input) {
     return input
