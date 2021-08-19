@@ -21,6 +21,7 @@ class Masaylo
 {
   
   public:
+  void setCard(bool value);
     void init(int MIP=6,int MIA=7,int MIB=8,int MDP=11,int MDA=12,int MDB=13);//se añaden los pines ENA y ENB 
     void BT(int tx, int rx);
     void ultrasonidos(int t=16, int e=17);
@@ -54,6 +55,7 @@ class Masaylo
     void tono(int frequency, int time);
 
   private:
+
     int _MIA;
     int _MIB;
     int _MIP;

@@ -6,9 +6,27 @@
  #else
  #include "Servo.h"
  #endif
+ #if defined(ARDUINO_ARCH_ESP8266)
+#define _nodemcu true
+ #else
+#define _nodemcu false
+ #endif
 
 void Masaylo::init(int MIP, int MIA, int MIB, int MDP, int MDA, int MDB)
 {
+
+Serial.print("variable: ");
+Serial.println(_nodemcu);
+
+if (_nodemcu)	{
+	_MDP=5;
+	_MDA=0;
+	_MIP=4;
+	_MIA=2;
+	pinMode(_MIA,OUTPUT);
+pinMode(_MDA,OUTPUT);
+
+}else{
 pinMode(MIA,OUTPUT);
 pinMode(MIB,OUTPUT);
 pinMode(MDA, OUTPUT);
@@ -19,46 +37,87 @@ _MIP=MIP;
 _MDA=MDA;
 _MDB=MDB;
 _MDP=MDP;
+
 }
+}
+
 
 //Procedimientos poniendo control de velocidad con pines ENA y ENB y velocidad por defecto 255
 void Masaylo::alto(){//paro de motor activo, si lo ponemos todo LOW las bobinas se desactivan y llevan inercia, de esta manera ayudan al paro
+if (!_nodemcu){
 digitalWrite(_MIB,HIGH);
 digitalWrite(_MIA,HIGH);
 digitalWrite(_MDB,HIGH);
 digitalWrite(_MDA,HIGH);
+}else{
+	digitalWrite(_MIP,LOW);
+	digitalWrite(_MIA,LOW);
+	digitalWrite(_MDP,LOW);
+	digitalWrite(_MDA,LOW);
+}
 }
 void Masaylo::adelante(int v){
+if(!_nodemcu){
 analogWrite (_MIP,v);
 digitalWrite(_MIA,HIGH);
 digitalWrite(_MIB,LOW);
 analogWrite (_MDP,v);
 digitalWrite(_MDA,HIGH);
 digitalWrite(_MDB,LOW);
+	
+}else {
+analogWrite (_MIP,v*4);
+digitalWrite(_MIA,HIGH);
+analogWrite (_MDP,v*4);
+digitalWrite(_MDA,HIGH);
+	
+}
 }
 void Masaylo::atras(int v){
+if (!_nodemcu){
 analogWrite (_MIP,v);
 digitalWrite(_MIB,HIGH);
 digitalWrite(_MIA,LOW);
 analogWrite (_MDP,v);
 digitalWrite(_MDB,HIGH);
 digitalWrite(_MDA,LOW);
+}else {
+analogWrite (_MIP,v*4);
+digitalWrite(_MIA,LOW);
+analogWrite (_MDP,v*4);
+digitalWrite(_MDA,LOW);
+}
 }
 void Masaylo::izquierda(int v){//pivotar izda con dos motores
+if (!_nodemcu){
 analogWrite (_MIP,v);
 digitalWrite(_MIA,LOW);
 digitalWrite(_MIB,HIGH);
 analogWrite (_MDP,v);
 digitalWrite(_MDA,HIGH);
 digitalWrite(_MDB,LOW);
+}else{
+analogWrite (_MIP,v*4);
+digitalWrite(_MIA,LOW);
+analogWrite (_MDP,v*4);
+digitalWrite(_MDA,HIGH);
+}
 }
 void Masaylo::derecha(int v){//pivotar dcha con dos motores
+if (!_nodemcu){
 analogWrite (_MIP,v);
 digitalWrite(_MIA,HIGH);
 digitalWrite(_MIB,LOW);
 analogWrite (_MDP,v);
 digitalWrite(_MDA,LOW);
 digitalWrite(_MDB,HIGH);
+}else{
+analogWrite (_MIP,v*4);
+digitalWrite(_MIA,HIGH);
+analogWrite (_MDP,v*4);
+digitalWrite(_MDA,LOW);
+
+}
 }
 
 void Masaylo::ultrasonidos(int t, int e){
@@ -183,4 +242,5 @@ void Masaylo::tono(int frequency, int time){
 	delay(time);
 	noTone(_buzz);
 }
+
 
