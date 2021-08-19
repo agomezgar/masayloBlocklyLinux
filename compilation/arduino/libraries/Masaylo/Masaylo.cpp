@@ -15,9 +15,6 @@
 void Masaylo::init(int MIP, int MIA, int MIB, int MDP, int MDA, int MDB)
 {
 
-Serial.print("variable: ");
-Serial.println(_nodemcu);
-
 if (_nodemcu)	{
 	_MDP=5;
 	_MDA=0;
@@ -66,6 +63,7 @@ digitalWrite(_MDA,HIGH);
 digitalWrite(_MDB,LOW);
 	
 }else {
+
 analogWrite (_MIP,v*4);
 digitalWrite(_MIA,HIGH);
 analogWrite (_MDP,v*4);

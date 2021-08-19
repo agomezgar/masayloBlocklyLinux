@@ -6,6 +6,12 @@
 /*
 Modificaciones Maribel Ruiz y Pedro Ruiz 25/05/2021
 */
+/*
+Añadida compatibilidad con NODEMCU para su uso con
+shield HW-88 con puente en H 293 incorporado
+por Antonio Gómez 19/08/2021
+*/
+
 #ifndef Masaylo_h
 #define Masaylo_h
  #if defined(ARDUINO_ARCH_ESP32)
@@ -21,7 +27,6 @@ class Masaylo
 {
   
   public:
-  void setCard(bool value);
     void init(int MIP=6,int MIA=7,int MIB=8,int MDP=11,int MDA=12,int MDB=13);//se añaden los pines ENA y ENB 
     void BT(int tx, int rx);
     void ultrasonidos(int t=16, int e=17);
