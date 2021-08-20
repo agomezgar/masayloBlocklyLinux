@@ -680,7 +680,7 @@ Blockly.Blocks['label'] = {
     }
 };
 Blockly.Arduino['label'] = function(block){
-    var content = block.getFieldValue('value');
+    var content = looseEscape(block.getFieldValue('value'));
     var for_value = block.getFieldValue('for');
     return '<label for=' + for_value + '>' + content + '</label>\n'
 };

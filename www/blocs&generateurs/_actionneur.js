@@ -1121,7 +1121,12 @@ Blockly.Arduino["servo_move"]=function(block){
     Blockly.Arduino.includes_["define_servo"]="#include <Servo.h>";
     }
     Blockly.Arduino.definitions_["var_servo" + value_pin]="Servo servo_" + value_pin + ";";
+    if (localStorage.card=="esp8266"){
+        Blockly.Arduino.setups_["setup_servo_" + value_pin]="servo_" + value_pin + ".attach(" + value_pin + ",400,2600);";
+
+    }else{
     Blockly.Arduino.setups_["setup_servo_" + value_pin]="servo_" + value_pin + ".attach(" + value_pin + ");";
+    }
     return "servo_" + value_pin + ".write(" + value_degree + ");\n"
 };
 Blockly.Python["servo_move"]=function(block){
