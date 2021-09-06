@@ -24,12 +24,12 @@ window.addEventListener('load', function load(event) {
 		window.close()
 	}
 	document.getElementById('btn_connect').onclick = function(event) {
-		var SerialPort = require("serialport")
+		const SerialPort = require("serialport")
 		var line = SerialPort.parsers.Readline;
 		var moniteur = document.getElementById('fenetre_term')
 		var baud = parseInt(localStorage.getItem("baudrate"))
 		var com = localStorage.getItem("com")
-		s_p = new SerialPort(com,{baudRate:baud, autoOpen:false})
+		var s_p = new SerialPort(com,{baudRate:baud, autoOpen:false})
 		var parser = s_p.pipe(new line({ delimiter: '\n' }))
 		if (connexion){
 			document.getElementById('btn_connect').innerHTML="<span class='fa fa-play'> Arrancar</span>"
@@ -40,7 +40,7 @@ window.addEventListener('load', function load(event) {
 			document.getElementById('btn_connect').innerHTML="<span class='fa fa-pause'> Parar</span>"
 			document.getElementById('btn_envoi').disabled=false
 			s_p.open(function (err) { moniteur.innerHTML += 'inicio de la comunicación<br>' ;
-		console.log(err);
+		console.log(err.message);
 	})
 			connexion = true
 			parser.on('data', function(data){

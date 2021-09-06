@@ -49,9 +49,10 @@
    "output": "./dist"
   },
   "files": [
-   "./compilation/**/*",
-   "./www/**/*",
-   "./drivers/**/*",
+   "/compilation/**/*",
+   "/www/**/*",
+   "/resources/**/*",
+   "/driversUSB/**/*",
    "*.js",
    "*.json",
    "*.md",
