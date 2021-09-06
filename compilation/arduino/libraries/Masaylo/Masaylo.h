@@ -6,6 +6,9 @@
 /*
 Modificaciones Maribel Ruiz y Pedro Ruiz 25/05/2021
 */
+/*
+Adaptación a tarjetas ESP Antonio Gómez 01/09/2021
+*/
 #ifndef Masaylo_h
 #define Masaylo_h
   #if defined(ARDUINO_ARCH_ESP32)
