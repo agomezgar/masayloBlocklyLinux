@@ -6,15 +6,9 @@
 /*
 Modificaciones Maribel Ruiz y Pedro Ruiz 25/05/2021
 */
-/*
-Añadida compatibilidad con NODEMCU para su uso con
-shield HW-88 con puente en H 293 incorporado
-por Antonio Gómez 19/08/2021
-*/
-
 #ifndef Masaylo_h
 #define Masaylo_h
- #if defined(ARDUINO_ARCH_ESP32)
+  #if defined(ARDUINO_ARCH_ESP32)
  #include "ESP32Servo.h"
  #else
  #include "Servo.h"
@@ -22,7 +16,6 @@ por Antonio Gómez 19/08/2021
 #include "Arduino.h"
 //#include "Encoder.h"
 
- 
 class Masaylo
 {
   
@@ -55,12 +48,11 @@ class Masaylo
     void giracabeza (int g);
     void girabrazo (int g);
     //procedimiento para indicar el pin al que se conecta un zumbador	
-    void buzzer(int pin=18);
+    void buzzer(int pin=1);
     //procedimiento para indicar la frecuencia y duración del sonido del zumbador
     void tono(int frequency, int time);
 
   private:
-
     int _MIA;
     int _MIB;
     int _MIP;
