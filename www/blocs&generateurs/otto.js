@@ -1364,6 +1364,8 @@ return code;
 Blockly.Blocks['otto9_mouth'] = {  init: function() {
     this.appendDummyInput() .appendField(new Blockly.FieldImage('media/matrix.png', 48, 48, "*"))
         .appendField(Blockly.Msg.OTTO9_MOUTH_TEXT).appendField(new Blockly.FieldDropdown(Blockly.Msg.OTTO9_MOUTH_CHOICE), "otto9_mouth_choice");
+        this.appendDummyInput()	.appendField(Blockly.Msg.OTTO9_ORIENTATION).appendField(new Blockly.FieldDropdown([["0°", "1"], ["90°", "4"], ["180°", "2"], ["270°", "3"]]), "Orientation")
+
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -1374,6 +1376,7 @@ Blockly.Blocks['otto9_mouth'] = {  init: function() {
 };
 Blockly.Arduino['otto9_mouth'] = function(block) {
   var dropdown_otto9_mouth_choice = block.getFieldValue('otto9_mouth_choice');
+  var Orientation = this.getFieldValue('Orientation'); 
   Blockly.Arduino.includes_['otto9_lib'] = '#include <Otto9Humanoid.h>\n'
 	+ 'Otto9Humanoid Otto;';
   Blockly.Arduino.variables_['otto9_matrix'] = 'const char data[] = "VARIABLE#";\n'
@@ -1381,7 +1384,7 @@ Blockly.Arduino['otto9_mouth'] = function(block) {
   Blockly.Arduino.definitions_['otto9_matrix_def'] = '#define DIN_PIN A3\n'
 	+ '#define CS_PIN A2\n'
 	+ '#define CLK_PIN A1\n'
-	+ '#define LED_DIRECTION 1';
+	+ '#define LED_DIRECTION '+Orientation;
   Blockly.Arduino.setups_['otto9_matrix']='Otto.initMATRIX( DIN_PIN, CS_PIN, CLK_PIN, LED_DIRECTION);';
   var code = 'Otto.putMouth(' + dropdown_otto9_mouth_choice + ');\n';
   return code;

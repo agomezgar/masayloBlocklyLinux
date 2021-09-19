@@ -475,6 +475,8 @@ Blockly.Msg.OTTO9_ARMS_TOOLTIP = "move the arms!";
 Blockly.Msg.OTTO9_ARMS_CHOICE = [["hands up", "HANDSUP"], ["handwave left", "HANDWAVE1"], ["handwave right", "HANDWAVE2"]];
 Blockly.Msg.OTTO9_APP="Save app";
 Blockly.Msg.OTTO9_HUMANOID_TOOLTIP="You can control your Humanoid with an app at your disposal at Google Play Store";
+Blockly.Msg.OTTO9_ORIENTATION="Orientation: ";
+
 ////////////MASAYLO Robot////////// ONLY TRANSLATE THE LEFT PART INSIDE ["THIS YES" ,NOT]
 Blockly.Msg.MASAYLO_START_TEXT = "Start";
 Blockly.Msg.MASAYLO_START_TOOLTIP = "Declare a new robot type Masaylo";
