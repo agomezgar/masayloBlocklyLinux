@@ -65,14 +65,13 @@ extraeLibrerias();	 }
   */
 function creaMasaylo(){
 	//Creamos un directorio auxiliar en home
-alert('Ummm. Parece la primera vez que ejecutas esta versión del programa. Hay que utilizar algunas librerías. Espera '+
-'unos segundos y vuelve a compilar (si te da mensaje de error, espera un poco más y vuelve a intentarlo)...'); 
+alert(Blockly.Msg.initInstall); 
 //alert ('Aviso: si tenías Arduino previamente instalado, y habías instalado alguna librería poco común, es posible que después tengas que reinstalarla...');	
 var dir=homedir+'/.masaylo';
 	var dir2=dir+'/'+appVersion
 	var dir3=homedir+'/.masaylo/';
 if (fs.existsSync(dir)){
-	console.log("Borrando carpeta anterior...");
+	console.log(Msg.Blockly.deletingFolder);
 	fs2.removeSync(dir,{ recursive: true });
 }
 	fs.mkdirSync(dir,function(err,stdout){
@@ -100,7 +99,7 @@ function copiaArchivosCompilacion(){
 	fs2.copy(fuente, dir, function (err,stdout) {
 		if (err) return console.error(err)
 		console.log('2. Masaylo creado y carpeta de compilación creada!'+stdout);
-		alert("Se ha creado una carpeta ./masaylo en tu home. Pasamos a hacer copia de tus librerías");
+		alert(Blockly.Msg.copyingLibraries);
 		extraeLibrerias();
 		//actualizaTarjetasArduino();
 	//	alert("Carpeta ./masaylo instalada en tu home... Ya queda poco...");
@@ -116,23 +115,23 @@ function actualizaTarjetasArduino(){
 		if (err) console.log('error installando arduino: ' +err);
 		
 	console.log(stdout);
-	alert ("¡Bueno!. Parece que hemos terminado...");
+	alert (Blockly.Msg.missionAcomplished);
 	
-	let iot=confirm("Ya hemos instalado las tarjetas Arduino. ¿Piensas trabajar también con tarjetas ESP8266 o ESP32?");
+	let iot=confirm(Blockly.Msg.doYouWantIoT);
 if (iot){
-	alert("Esto puede alargarse un poco. Ten paciencia...");
+	alert(Blockly.Msg.youMustWait);
 			exec('./arduino-cli config init --additional-urls https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espressif.com/dl/package_esp32_index.json &&./arduino-cli core update-index && ./arduino-cli core install arduino:avr&&./arduino-cli core install esp8266:esp8266&&./arduino-cli core install esp32:esp32', {cwd: __dirname+'/compilation/arduino/'}, function(err, stdout, stderr){
 			if (err) console.log('error instalando esp8266/esp32: ' +err);
 			
 		console.log(stdout);
 		
-		alert("Instalación finalizada");
+		alert(Blockly.Msg.installFinished);
 		instalado=true;
 		//extraeLibrerias();
 	
 	});
 }else{
-	alert ("Entonces ya hemos terminado. ¡Ya puedes empezar!");
+	alert (Blockly.Msg.installationFinished);
 	instalado=true;
 }
 	instalado=true;
@@ -157,7 +156,7 @@ function extraeLibrerias(){
 			 }
 		
 		 })
-		 alert('Ya hemos instalado las librerías. Falta instalar las tarjetas Arduino...');
+		 alert(Blockly.Msg.librariesInstalled);
 		 actualizaTarjetasArduino();
 		
 	
@@ -170,7 +169,7 @@ function extraeLibrerias(){
 
 function terminado(){
 	console.log('5. vamos terminando');
-	alert ("terminado() terminado");
+	alert (Blockly.Msg.allFinished);
 	instalado=true;
 
 /* 	fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err,stdout){
@@ -418,7 +417,7 @@ instalado=false;
 
 //creaMasaylo().then(copiaArchivosCompilacion().then(actualizaTarjetasArduino().then(extraeLibrerias().then(terminado(data)))));
 creaMasaylo();
-messageDiv.innerHTML="Cierra esta ventana y espera a que te avise";
+messageDiv.innerHTML=Blockly.Msg.closeWindowandWait;
 btn_close_message.style.display="inline";
 return;	
 }
