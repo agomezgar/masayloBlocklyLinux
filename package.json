@@ -35,8 +35,8 @@
   "start": "electron .",
   "compiler": "build --linux --x64",
   "compiler32": "build --linux --ia32",
-  "deb64": "electron-installer-debian --src dist/linux-unpacked --dest dist/installers/ --arch amd64",
-  "deb32": "electron-installer-debian --src dist/linux-unpacked32 --dest dist/installers/ --arch ia32",
+  "deb64": "electron-installer-debian --src dist/linux-unpacked --dest dist/installers/ --arch amd64 --config debconfig.json",
+  "deb32": "electron-installer-debian --src dist/linux-unpacked32 --dest dist/installers/ --arch ia32 --config debconfig.json",
   "publier": "build --linux --x64 -p always",
   "rebuild": "electron-rebuild -f -w serialport"
  },
