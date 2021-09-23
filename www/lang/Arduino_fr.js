@@ -437,7 +437,7 @@ Blockly.Msg.OTTO9_DANCE_SIZE_TEXT = "Taille";
 Blockly.Msg.OTTO9_DANCE_SIZE_CHOICE = [["Normale", "25"], ["Petite", "10"], ["Grande", "40"]];
 Blockly.Msg.OTTO9_DO_TEXT = "Faire";
 Blockly.Msg.OTTO9_DO_TOOLTIP = "Otto mouvements complexes";
-Blockly.Msg.OTTO9_DO_CHOICE = [ ["Balance", "swing"], ["Haut-Bas", "updown"], ["Pointe des pieds", "tiptoeSwing"], ["Sautiller", "jitter"], ["Torsion", "ascendingTurn"]];
+Blockly.Msg.OTTO9_DO_CHOICE = [ ["Se balancer", "swing"], ["Pointe de pieds", "updown"], ["Pas croisés", "jitter"], ["Faire la 'Ola'", "ascendingTurn"]];
 Blockly.Msg.OTTO9_GESTURE_TEXT = "Gestes";
 Blockly.Msg.OTTO9_GESTURE_TOOLTIP = "Expressions sonores combinés avec des mouvements";
 Blockly.Msg.OTTO9_GESTURE_CHOICE = [["😃 Très heureux","OttoSuperHappy"],["🙂 Heureux","OttoHappy"], ["🙁 Triste", "OttoSad"], ["😴 Sommeil", "OttoSleeping"], ["😕 Confus", "OttoConfused"], ["😰 Inquiet","OttoFretful"], ["😍 Amoureux","OttoLove"], ["😡 En colère", "OttoAngry"], ["🤩 Magie","OttoMagic"], ["😐  Vague","OttoWave"], ["😎 Victorieux","OttoVictory"], ["😞 Erreur","OttoFail"], ["💩 Flatulence", "OttoFart"]];
@@ -468,7 +468,7 @@ Blockly.Msg.OTTO9_CLEAR_TOOLTIP = "Eteint tous les LEDs de la matrice 8x8";
 Blockly.Msg.OTTO9_ARMS_TEXT = "Bras";
 Blockly.Msg.OTTO9_ARMS_TOOLTIP = "Bouger les bras !";
 Blockly.Msg.OTTO9_ARMS_CHOICE = [["Mains en l’air", "HANDSUP"], ["Saluer avec bras gauche", "HANDWAVE1"], ["Saluer avec bras droit", "HANDWAVE2"]];
-Blockly.Msg.OTTO9_APP="Sauvegarder application";
+Blockly.Msg.OTTO9_APP="Installer Application Bluetooth";
 Blockly.Msg.OTTO9_HUMANOID_TOOLTIP="Vous pouvez contrôler Otto Humanoïde avec une application à votre disposition sur Google Play Store";
 Blockly.Msg.OTTO9_ORIENTATION="Orientation: ";
 ////////////MASAYLO Robot////////// ONLY TRANSLATE THE LEFT PART INSIDE ["THIS YES" ,NOT]

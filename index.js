@@ -29,6 +29,12 @@ var messageDiv = document.getElementById('messageDIV')
 var detailDiv = document.getElementById('detailDIV')
 var btn_detail = document.getElementById('btn_detail')
 var btn_close_message = document.getElementById('btn_close_message')
+var btn_verify=document.getElementById('btn_verify')
+btn_verify.title=Blockly.Msg.compile 
+var btn_flash=document.getElementById('btn_flash')
+btn_flash.title=Blockly.Msg.insertflash 
+var btn_bin=document.getElementById('btn_bin')
+btn_bin.title=Blockly.Msg.bin 
 const homedir = require('os').homedir();
 const extract = require('extract-zip');
 //Pendiente de resolver la sincronicidad
