@@ -105,7 +105,7 @@ function copiaArchivosCompilacion(){
 	fs2.copy(fuente, dir, function (err,stdout) {
 		if (err) return console.error(err)
 		console.log('2. Masaylo creado y carpeta de compilación creada!'+stdout);
-		alert(Blockly.Msg.copyingLibraries);
+		alert(Blockly.Msg.copyingFolders);
 		extraeLibrerias();
 		//actualizaTarjetasArduino();
 	//	alert("Carpeta ./masaylo instalada en tu home... Ya queda poco...");

@@ -59,6 +59,7 @@ Blockly.Msg.CAT_DFPLAYER = "- Audio";
 Blockly.Msg.btn_variable= " OK ";
 Blockly.Msg.btn_close= " Cerrar ";
 Blockly.Msg.btn_valid= " Validar ";
+Blockly.Msg.btn_reset="Vaciar la memoria caché";
 Blockly.Msg.btn_config= " Preferencias ";
 Blockly.Msg.btn_about= " Sobre ";
 Blockly.Msg.btn_new= " Nuevo ";
