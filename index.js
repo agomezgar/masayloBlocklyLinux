@@ -77,7 +77,7 @@ var dir=homedir+'/.masaylo';
 	var dir2=dir+'/'+appVersion
 	var dir3=homedir+'/.masaylo/';
 if (fs.existsSync(dir)){
-	console.log(Msg.Blockly.deletingFolder);
+	console.log(Blockly.Msg.deletingFolder);
 	fs2.removeSync(dir,{ recursive: true });
 }
 	fs.mkdirSync(dir,function(err,stdout){
