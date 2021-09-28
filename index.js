@@ -77,7 +77,7 @@ var dir=homedir+'/.masaylo';
 	var dir2=dir+'/'+appVersion
 	var dir3=homedir+'/.masaylo/';
 if (fs.existsSync(dir)){
-	console.log(Msg.Blockly.deletingFolder);
+	console.log(Blockly.Msg.deletingFolder);
 	fs2.removeSync(dir,{ recursive: true });
 }
 	fs.mkdirSync(dir,function(err,stdout){
@@ -348,6 +348,9 @@ window.addEventListener('load', function load(event){
 		clipboard.writeText($('#pre_previewArduino').text())
 	})
 	$('#btn_bin').on('click', function(){
+		if (localStorage.prog!='arduino'&&localStorage.prog!='avr109'&&localStorage.prog!='wiring'){
+			alert('only arduino cards');
+		return;}
 		if (localStorage.getItem('verif') == "false"){
 			$("#message").modal("show")
 			messageDiv.style.color = '#000000'
@@ -748,6 +751,7 @@ return;
 		}
 	})
 	ipcRenderer.on('saved-bloc', function(event, path){
+		console.log("saving on path: "+path);
 		if (path === null) {
 			return
 		} else {
@@ -778,8 +782,10 @@ return;
 	})
 	ipcRenderer.on('saved-bin', function(event, path){
 		if (path === null) {
+			console.log("no encontre...")
 			return
 		} else {
+		
 			var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace)
 			var toolbox = localStorage.getItem("toolbox")
 			if (!toolbox) {
@@ -804,9 +810,11 @@ return;
 			var file = path.split("\\")
 			var id = file.length - 1
 			document.getElementById('span_file').textContent = " - " + file[id]
-			fs.copyFile(chemin+'/compilation/arduino/build/sketch.ino.with_bootloader.hex', res[0]+'_with_bootloader.hex', (err) => {if (err) throw err})
-			fs.copyFile(chemin+'/compilation/arduino/build/sketch.ino.hex', res[0]+'.hex', (err) => {if (err) throw err})
-			fs.copyFile(chemin+'/compilation/arduino/sketch/sketch.ino', res[0]+'.ino', (err) => {if (err) throw err})
+			//homedir+'/.masaylo/arduino/sketch/sketch.ino'
+
+			fs.copyFile(homedir+'/.masaylo/arduino/sketch/build/arduino.avr.'+localStorage.card+'/sketch.ino.with_bootloader.hex', res[0]+'_with_bootloader.hex', (err) => {if (err) throw err})
+			fs.copyFile(homedir+'/.masaylo/arduino/sketch/build/arduino.avr'+localStorage.card+'/sketch.ino.hex', res[0]+'.hex', (err) => {if (err) throw err})
+			fs.copyFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', res[0]+'.ino', (err) => {if (err) throw err})
 		}
 	})
 	ipcRenderer.on('saved-png', function(event, path){

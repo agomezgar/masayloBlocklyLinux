@@ -165,13 +165,17 @@ ipcMain.on("modalVar", function(event, arg) {
 	)
 })
 ipcMain.on('save-bin', function(event) {
-	dialog.showSaveDialog(mainWindow,{
+	
+	var archivo=dialog.showSaveDialog(mainWindow,{
 		title: 'Exportar los binarios',
 		defaultPath: 'Programa.hex',
 		filters: [{ name: 'Binarios', extensions: ['hex']}]
-	},
-	function(filename){
-		event.sender.send('saved-bin', filename)
+	})
+	.then(result=>{
+	
+		archivo=result.filePath;
+		if (path.extname(archivo)==""){archivo=archivo+'.hex'}
+		event.sender.send('saved-bin', archivo)
 	})
 })
 ipcMain.on('save-png', function(event) {
@@ -182,7 +186,8 @@ ipcMain.on('save-png', function(event) {
 	}
 	).then(result=>{
 		archivo=result.filePath;
-		event.sender.send('saved-png', archivo+'.png');
+		if (path.extname(archivo)==""){archivo=archivo+'.png'}
+		event.sender.send('saved-png', archivo);
 
 	})
 })
@@ -193,7 +198,9 @@ ipcMain.on('save-png-html', function(event) {
 		filters: [{ name: 'Images', extensions: ['png'] }]
 	},
 	function(filename){
-		event.sender.send('saved-png-html', filename)
+		archivo=result.filePath;
+		if (path.extname(archivo)==""){archivo=archivo+'.png'}
+		event.sender.send('saved-png-html', archivo)
 	})
 })
 ipcMain.on('save-png-factory', function(event) {
@@ -213,7 +220,8 @@ ipcMain.on('save-ino', function(event) {
 		filters: [{ name: 'Arduino', extensions: ['ino'] }]
 	}).then(result=>{
 		archivo=result.filePath;
-		event.sender.send('saved-ino', archivo+'.ino');
+		if (path.extname(archivo)==""){archivo=archivo+'.ino'}
+		event.sender.send('saved-ino', archivo);
 
 	});
 
@@ -233,11 +241,13 @@ ipcMain.on('save-bloc', function(event) {
 	var archivo=dialog.showSaveDialog(mainWindow,{
 		title: 'Guardar el diagrama .BLOC',
 		defaultPath: 'Programa',
-		filters: [{ name: 'MasayloBlockly', extensions: ['bloc'] }]
+		properties:[{showOverwriteConfirmation:'true'}],
+		filters: [{ name: 'MasayloBlockly', extensions: ['bloc']}]
 	}).then(result => {
 		archivo=result.filePath;
+		if (path.extname(archivo)==""){archivo=archivo+'.bloc'}
 
-		event.sender.send('saved-bloc',archivo+'.bloc');
+		event.sender.send('saved-bloc',archivo);
 
 	}
 )
@@ -280,7 +290,8 @@ ipcMain.on('save-csv', function(event) {
 		filters: [{ name: 'donnees', extensions: ['csv'] }]
 	}).then(result=> {
 		archivo=result.filePath;
-		event.sender.send('saved-csv', archivo+'.csv');
+		if (path.extname(archivo)==""){archivo=archivo+'.csv'}
+		event.sender.send('saved-csv', archivo);
 	}
 	)
 })
