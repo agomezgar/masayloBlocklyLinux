@@ -574,6 +574,8 @@ return;
 		messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
 		console.log('grabando hex');
 		var dir2=homedir+('/.masaylo/arduino/flash.sh ');
+		console.log("type: "+type+"micro: "+micro+" build: "+build+", cpu: "+cpu);
+
 		exec(dir2 + com+ ' ' +' '+type+' '+micro+' '+ build +' '+cpu, {cwd: homedir+'/.masaylo/arduino'} , function(err, stdout, stderr){
 		//	console.log("Puerto: "+com)
 			var erreur = stderr.toString().replace(/##################################################/g,"").replace(/|/g,"")
