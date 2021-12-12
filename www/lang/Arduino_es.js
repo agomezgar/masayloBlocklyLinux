@@ -568,6 +568,8 @@ Blockly.Msg.MASAYLO_PLAYBUZZER_TEXT="Tocar nota: ";
 Blockly.Msg.MASAYLO_FREQUENCY_TEXT="Frecuencia (Hz): ";
 Blockly.Msg.MASAYLO_TIME_TEXT="Duración (ms): ";
 Blockly.Msg.MASAYLO_BUZZER_PLAY_TOOLTIP="Indica la frecuencia en Hz y la duración en milisegundos de tu nota...";
+Blockly.Msg.MASAYLO_GORJEO_TEXT="Gorjeo";
+Blockly.Msg.MASAYLO_GORJEO_TOOLTIP="Masaylo emite un ruidito parecido al del robot R2-D2 de Star Wars";
 
 ////////////ESCORNABOT Robot////////// ONLY TRANSLATE THE LEFT PART INSIDE ["THIS YES" ,NOT]
 Blockly.Msg.ESCORNABOT_MODE_TEXT="Iniciar Escornabot";

@@ -569,7 +569,8 @@ Blockly.Msg.MASAYLO_PLAYBUZZER_TEXT="Play tone: ";
 Blockly.Msg.MASAYLO_FREQUENCY_TEXT="Tone (Hz): ";
 Blockly.Msg.MASAYLO_TIME_TEXT="Time(ms): ";
 Blockly.Msg.MASAYLO_BUZZER_PLAY_TOOLTIP="Play a tone with the frequency (Hz) and duration (ms) that you want it to play...";
-
+Blockly.Msg.MASAYLO_GORJEO_TEXT="Chirp";
+Blockly.Msg.MASAYLO_GORJEO_TOOLTIP="Masaylo chirps as the R2-D2 Star Wars robot";
 ////////////ESCORNABOT Robot////////// ONLY TRANSLATE THE LEFT PART INSIDE ["THIS YES" ,NOT]
 Blockly.Msg.ESCORNABOT_MODE_TEXT="Init Escornabot";
 Blockly.Msg.ESCORNABOT_MODE_CHOICE= [["Weak", ""], ["Strong", "(2)"], ["Medium", "(3)"]];;

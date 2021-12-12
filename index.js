@@ -2,22 +2,6 @@
 var remote = require('electron').remote
 var { exec } = require('child_process')
 var sp = require('serialport')
-// var virtualSerialPort= require('virtual-serialport');
-/* vsp=new virtualSerialPort('/dev/ttyUSB51', { baudrate: 9600 });
-vsp.on('open', function (err) {
- console.log("Puerto virtual abierto");
-	vsp.on("data", function(data) {
-	  console.log("From Arduino: " + data);
-	});
-   
-
-	  vsp.on("dataToDevice", function(data) {
-		vsp.writeToComputer(data + " " + data + "!");
-	  });
-	
-   
-//	vsp.write("BLOOP"); // "From Arduino: BLOOP BLOOP!"
-  }); */
 var fs = require('fs')
 var fs2 = require("fs-extra");
 var tableify = require('tableify')
@@ -37,6 +21,7 @@ var btn_bin=document.getElementById('btn_bin')
 btn_bin.title=Blockly.Msg.bin 
 const homedir = require('os').homedir();
 const extract = require('extract-zip');
+
 //Pendiente de resolver la sincronicidad
 var instalado=true;
 /* function instalarArduino(callback1, callback2, callback3,callback4,callback5){
@@ -414,9 +399,10 @@ window.addEventListener('load', function load(event){
 				}
 				itsOK(0)
 			})
-		} else {
-if(process!="win32"){
-	
+		} 
+		else {
+		//Comprobamos primera instalación en Linux
+		if(process.platform=="linux"){
 	var dir=homedir+'/.masaylo/'+appVersion;
 	if (!fs.existsSync(dir)){
 		//Ponemos instalado en false para impedir cualquier proceso hasta que finalice la instalación
@@ -431,7 +417,67 @@ btn_close_message.style.display="inline";
 return;	
 }
 
-}
+			}
+		//Comprobamos primera instalación en Windows
+			if (process.platform=="win32"){
+				console.log("Comprobando en Windows");
+				var dir=chemin+'\\'+appVersion;
+				console.log(dir);
+			if (!fs.existsSync(dir)){						messageDiv.innerHTML = "Ok" 
+			btn_close_message.style.display = "inline"
+				fs.writeFile(dir, appVersion, (err) => {
+					alert(Blockly.Msg.initInstall);
+					instalado=false;
+					if(err){
+						console.log("Problema creando el archivo de nueva versión"+ err.message);
+					}
+					messageDiv.innerHTML = Blockly.Msg.check + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+				
+					exec('instala.bat ' + carte, {cwd: chemin+'/compilation/arduino'}, function(err, stdout, stderr){
+						if (stderr) {
+							console.log(stderr);
+							alert (Blockly.Msg.errorWhenInstalling + stderr);
+							return
+						}
+						console.log(stdout);
+						let iot=confirm(Blockly.Msg.doYouWantIoT);
+						if (iot){
+							alert(Blockly.Msg.youMustWait);
+									exec('instalaESP.bat', {cwd: chemin+'/compilation/arduino/'}, function(err, stdout, stderr){
+									if (err) {
+										console.log('error instalando esp8266/esp32: ' +err);
+										alert(Blockly.Msg.errorWhenIoT);
+									}										
+								console.log(stdout);
+								
+								alert(Blockly.Msg.installFinished);
+								instalado=true;
+								//extraeLibrerias();
+								alert(Blockly.Msg.missionAcomplished);
+								instalado=true;
+								
+								messageDiv.innerHTML = "Todo ok" 
+								btn_close_message.style.display = "inline"
+							});
+						}else{
+						alert(Blockly.Msg.missionAcomplished);
+						instalado=true;
+						
+
+						}
+						messageDiv.innerHTML = "Ok" 
+						btn_close_message.style.display = "inline"
+					});
+			
+					
+			});
+		}
+
+
+			
+	
+	}
+
 			if ( cpu == "cortexM0" ) {
 				exec('verify_microbit.bat ' + carte, {cwd: chemin+'/compilation/arduino'}, function(err, stdout, stderr){
 					if (stderr) {
@@ -453,6 +499,7 @@ return;
 				})
 			} else {
 				if (instalado){
+					if (process.platform=='linux'){
 				fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err){
 					if (err) return console.log('error nuevo'+homedir+'/.masaylo/arduino/sketch/sketch.ino')
 				})
@@ -492,8 +539,44 @@ return;
 				})
 			
 			}
+			if (process.platform=='win32'){
+				fs.writeFile(chemin+'/compilation/arduino/sketch/sketch.ino', data, function(err){
+					if (err) return console.log(err)
+				})
+				exec('verifica.bat ' + carte, {cwd: chemin+'/compilation/arduino'}, function(err, stdout, stderr){
+					console.log("Tarjeta: "+carte);
+					if (stderr) {
+						if (carte=="esp8266"){
+					if (stderr.includes("Executable segment sizes:")){
+					console.log("Unattended error message... Ignoring it");
+					}
+						
+						} else{
+							if (instalado){
+						console.log(stderr);
+						fs.realpath(chemin+'/compilation/arduino/sketch/sketch.ino' , function(err, path){
+							if (err) return console.log(err)
+							var erreur = stderr.toString().replace("exit status 1","")
+							var error = erreur.replace(/error:/g,"").replace(/token/g,"")
+							var errors = error.split(path)
+							messageDiv.style.color = '#ff0000'
+							messageDiv.innerHTML = "ERREURS"
+							errors.forEach(function(e){
+								messageDiv.innerHTML += e + "<br>"
+							})
+							btn_close_message.style.display = "inline"
+						})
+						return
+					}
+				}
+				}if (instalado){
+					localStorage.setItem('detail', stdout.toString())
+					itsOK(0)
+			}
+				})
+			}
 		}
-
+	}
 		localStorage.setItem("verif",true)
 	}
 	})
@@ -518,7 +601,7 @@ return;
 			btn_close_message.style.display = "inline"
 			return
 		}
-		var dir=homedir+'/.masaylo/'+appVersion;
+	
 /* 		if (fs.existsSync(dir)){
 			console.log("pos claro que existe");
 			var dir2=dir+'/'+appVersion;
@@ -526,24 +609,34 @@ return;
 				console.log("Ya está instalada la version "+appVersion);
 			}
 		} */
-		console.log("Buscando antes de cargar "+appVersion);
+	//	console.log("Buscando antes de cargar "+appVersion);
+	if (process.platform=='linux'){
+	var dir=homedir+'/.masaylo/'+appVersion;
 	if (!fs.existsSync(dir)){
 instalado=false;
 creaMasaylo();
-messageDiv.innerHTML='Cierra esta ventana y espera a que te avise...';
+messageDiv.innerHTML=Blockly.Msg.closeWindowandWait;;
 btn_close_message.style.display = "inline"
 console.log("Iniciando creaMasaylo()")
 //creaMasaylo().then(copiaArchivosCompilacion().then(actualizaTarjetasArduino().then(extraeLibrerias().then(terminado(data)))));
 
 
 return;	
-}if (instalado){
+}
+if (instalado){
 		if ( localStorage.getItem('verif') == "false" ){
 			messageDiv.style.color = '#000000'
 		messageDiv.innerHTML = Blockly.Msg.check + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		if (process.platform=='linux'){
 		fs.writeFile(homedir+'/.masaylo/arduino/sketch/sketch.ino', data, function(err){
 			if (err) return console.log('error nuevo'+homedir+'/.masaylo/arduino/sketch/sketch.ino')
 		})
+	}
+	if (process.platform=='win32'){
+		fs.writeFile(chemin+'/compilation/arduino/sketch/sketch.ino', data, function(err){
+			if (err) return console.log(err)
+		})
+	}
 		//console.log("arduino: "+carte);
 		exec('./verify.sh ' + type+' '+micro+' '+build, {cwd: homedir+'/.masaylo/arduino/'}, function(err, stdout, stderr){
 			if (stderr) {
@@ -683,6 +776,192 @@ return;
 		}
 		localStorage.setItem("verif",false)
 	}
+}
+if (process.platform=='win32'){
+	var dir=chemin+'/'+appVersion
+	if (!fs.existsSync(dir)){
+		instalado=false;
+		fs.writeFile(dir, appVersion, (err) => {
+			if(err){
+				console.log("Problema creando el archivo de nueva versión"+ err.message);
+			}
+			alert(Blockly.Msg.initInstall);
+			messageDiv.innerHTML = Blockly.Msg.check + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		
+			exec('instala.bat ' + carte, {cwd: chemin+'/compilation/arduino'}, function(err, stdout, stderr){
+				if (stderr) {
+					console.log(stderr);
+					alert (Blockly.Msg.errorWhenInstalling+" "+stderr);
+					return
+				}
+				console.log(stdout);
+				let iot=confirm(Blockly.Msg.doYouWantIoT);
+				if (iot){
+					alert(Blockly.Msg.youMustWait);
+							exec('instalaESP.bat', {cwd: chemin+'/compilation/arduino/'}, function(err, stdout, stderr){
+							if (err) {
+								console.log('error instalando esp8266/esp32: ' +err);
+								alert(Blockly.Msg.errorWhenIoT);
+							}										
+						console.log(stdout);
+						
+						alert(Blockly.Msg.allFinished);
+						instalado=true;
+						//extraeLibrerias();
+						alert(Blockly.Msg.missionAcomplished);
+						instalado=true;
+						
+						messageDiv.innerHTML = "Todo ok" 
+						btn_close_message.style.display = "inline"
+					});
+				}else{
+				alert(Blockly.Msg.missionAcomplished);
+				instalado=true;
+				
+				messageDiv.innerHTML = "Todo ok" 
+				btn_close_message.style.display = "inline"
+				}
+			
+			})
+			
+	});
+}
+	if (instalado){
+	if ( localStorage.getItem('verif') == "false" ){	
+		messageDiv.style.color = '#000000'
+	messageDiv.innerHTML = Blockly.Msg.check + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+	fs.writeFile(chemin+'/compilation/arduino/sketch/sketch.ino', data, function(err){
+		if (err) return console.log(err)
+	})
+	console.log("No había verificado. Verificando...");
+	exec('verifica.bat ' + carte, {cwd: chemin+'/compilation/arduino'}, function(err, stdout, stderr){
+		//console.log(stdout);
+		if (stderr) {
+			if (carte=="esp8266"){
+				if (stderr.includes("Executable segment sizes:")){
+				console.log("Unattended error message... Ignoring it");
+				}}else{
+					if (instalado){
+			rech=RegExp('token')
+			if (rech.test(stderr)){
+				messageDiv.style.color = '#ff0000'
+				messageDiv.innerHTML = Blockly.Msg.error + quitDiv
+			} else {
+				messageDiv.style.color = '#ff0000'
+				if (err!= null){
+				messageDiv.innerHTML = err.toString() + quitDiv
+				}else{
+					messageDiv.innerHTML = stderr.toString() + quitDiv
+
+				}
+			}
+			return
+		}
+		}
+	}
+		messageDiv.style.color = '#009000'
+		messageDiv.innerHTML = Blockly.Msg.check + ': OK' + quitDiv
+	
+	messageDiv.style.color = '#000000'
+	messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+	exec('graba.bat ' + com + ' ' + carte + ' '+ com + ' ' + speed, {cwd: chemin+'/compilation/arduino'} , function(err, stdout, stderr){
+console.log("grabando...");
+		if (err) {
+			messageDiv.style.color = '#ff0000'
+			messageDiv.innerHTML = err.toString() + quitDiv
+			return
+		}
+		itsOK(0)
+	}) })
+	localStorage.setItem("verif",false)
+	return
+	}
+	messageDiv.style.color = '#000000'
+	messageDiv.innerHTML = Blockly.Msg.upload + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+	if ( prog == "python" ) {
+		if ( cpu == "cortexM0" ) {
+			var cheminFirmware = chemin+"/compilation/python/firmware.hex"
+			var fullHexStr = ""
+			exec('wmic logicaldisk get volumename', function(err, stdout){
+				if (err) return console.log(err)
+				localStorage.setItem("volumename", stdout.split('\r\r\n').map(value => value.trim()))
+			})
+			exec('wmic logicaldisk get name', function(err, stdout){
+				if (err) return console.log(err)
+				localStorage.setItem("name", stdout.split('\r\r\n').map(value => value.trim()))
+			})
+			var volume = localStorage.getItem("volumename")
+			var drive = localStorage.getItem("name")
+			var volumeN = volume.split(',')
+			var driveN = drive.split(',')
+			var count = volumeN.length
+			var disk = ""
+			for (var i = 0 ; i < count ; i++) {
+				if (volumeN[i]=="MICROBIT") disk = driveN[i]
+			}
+			if (disk!="") {
+				fs.readFile(cheminFirmware, function(err, firmware){
+					if (err) return console.log(err)
+					firmware = String(firmware)
+					fullHexStr = upyhex.injectPyStrIntoIntelHex(firmware, data)
+					fs.writeFile(disk + '\sketch.hex', fullHexStr, function(err){
+						if (err) {
+							messageDiv.style.color = '#ff0000'
+							messageDiv.innerHTML = err.toString()
+							btn_close_message.style.display = "inline"
+						}
+					})
+				})
+				setTimeout(itsOK(1), 7000)
+			} else {
+				messageDiv.style.color = '#000000'
+				messageDiv.innerHTML = 'Connecter la carte ou installer le pilote !' 
+				btn_close_message.style.display = "inline"
+			}
+		} else {
+			exec( 'python -m ampy -p ' + com + ' -b 115200 -d 1 run --no-output /py/sketch.py', {cwd: chemin+'/compilation/python'} , function(err, stdout, stderr){
+				if (stderr) return console.log(stderr)
+				if (err) {
+					messageDiv.style.color = '#ff0000'
+					messageDiv.innerHTML = err.toString() 
+					btn_close_message.style.display = "inline"
+					return
+				}
+				itsOK(1)
+			})
+		}
+	} else {
+		if ( cpu == "cortexM0" ) {
+			exec('flash_microbit.bat ', {cwd: chemin+'/compilation/arduino'} , function(err, stdout, stderr){
+				if (stderr) console.log(stderr)
+				localStorage.setItem('detail', stdout.toString())
+				if (err) {
+					messageDiv.style.color = '#ff0000'
+					messageDiv.innerHTML = err.toString() 
+					btn_close_message.style.display = "inline"
+					return
+				}
+				itsOK(1)
+			})
+		} else {
+			exec('graba.bat ' + com + ' ' + carte + ' '+ com + ' ' + speed, {cwd: chemin+'/compilation/arduino'} , function(err, stdout, stderr){
+				var erreur = stderr.toString().replace(/##################################################/g,"").replace(/|/g,"")
+				var errors = erreur.split("avrdude:")
+				localStorage.setItem('detail', errors)
+				if (err) {
+					messageDiv.style.color = '#ff0000'
+					messageDiv.innerHTML = err.toString() + "<br> "
+					btn_close_message.style.display = "inline"
+					return
+				}
+				itsOK(1)
+			})
+		}
+	}
+	localStorage.setItem("verif",false)
+}
+
+}
 	})
 	$('#btn_detail').on('click', function(){
 		detailDiv.innerHTML = localStorage.getItem('detail')

@@ -1,19 +1,38 @@
 var {electron, ipcMain, app, BrowserWindow, globalShortcut, dialog} = require('electron')
-var { autoUpdater } = require("electron-updater")
 
-  
+app.allowRendererProcessReuse = false
+var iconPath='';
+var windowURL='';
+var pathtermWindow='';
+var pathmodalVar='';
 var path = require('path')
 var mainWindow, termWindow, factoryWindow, promptWindow, promptOptions, promptAnswer, htmlWindow, gamesWindow
-autoUpdater.autoDownload = false
-autoUpdater.logger = null
+
 //Función de creación de ventana principal
 function createWindow() {
 
+
+	if (process.platform=='win32'){
+iconPath='./www/media/icon.png';
+windowURL=path.join(__dirname, './www/index.html');
+pathtermWindow=path.join(__dirname, "./www/term.html");
+pathmodalVar=path.join(__dirname, "./www/modalVar.html");
+
+	}
+	if (process.platform=='linux'){
+iconPath= path.join(__dirname, '/www/media/logo.png');
+windowURL='file://' + __dirname + '/www/index.html';
+pathtermWindow='file://' + __dirname + '/www/term.html';
+pathmodalVar='file://' + __dirname + '/www/modalVar.html';
+	}
 	mainWindow = new BrowserWindow({width: 1000, height: 625, 
-		icon:  path.join(__dirname, '/www/media/logo.png'), frame: false, movable: true,
+		icon:iconPath , frame: false, movable: true,
 	//	icon: path.join(__dirname, '/www/media/logoCabecera.png')
 webPreferences:{
-	nodeIntegration:true
+	contextIsolation: false,
+	nodeIntegration: true,
+	nodeIntegrationInWorker: true,
+	enableRemoteModule: true
 }})
 //Si es Windows y se ha hecho click en archivos de extensión x, estos se cargan
 	if (process.platform == 'win32' && process.argv.length >= 2) {
@@ -24,9 +43,12 @@ webPreferences:{
         if (file.endsWith(".www")||file.endsWith(".html")) {
 			mainWindow.loadURL(path.join(__dirname, './www/ffau.html?url='+file))
 		}
-		mainWindow.loadURL(path.join(__dirname, './www/index.html'))
+		mainWindow.loadURL(windowURL);
 	} else {
-	mainWindow.loadURL('file://' + __dirname + '/www/index.html')
+		console.log(process.platform);
+		console.log("comando anterior: "+iconPath)
+		console.log('comando: '+windowURL);
+	mainWindow.loadURL(windowURL)
 	}
 	mainWindow.setMenu(null)
 	mainWindow.on('closed', function () {
@@ -39,7 +61,7 @@ function createTerm() {
 	webPreferences:{
 		nodeIntegration:true
 	},resizable: false, movable: true, frame: false, modal: true})
-	termWindow.loadURL('file://' + __dirname + '/www/term.html')
+	termWindow.loadURL(pathtermWindow)
 	termWindow.setMenu(null)
 	termWindow.on('closed', function () {
 		termWindow = null
@@ -97,7 +119,7 @@ function promptModal(options, callback) {
 		nodeIntegration:true
 	},
 	 resizable: false, movable: true, frame: false, modal: true})
-	promptWindow.loadURL('file://' + __dirname + '/www/modalVar.html')
+	promptWindow.loadURL(pathmodalVar);
 	promptWindow.on('closed', function () {
 		promptWindow = null
 		callback(promptAnswer)
@@ -126,9 +148,7 @@ app.on('window-all-closed', function() {
 	if (htmlWindow) htmlWindow.webContents.executeJavaScript('localStorage.setItem("pwd", "")')
 	if (process.platform !== 'darwin') app.quit()
 })
-ipcMain.on("version", function() {
-	autoUpdater.checkForUpdates()
-})
+
 ipcMain.on("prompt", function() {
 	createTerm()
 })
@@ -326,42 +346,8 @@ ipcMain.on('openBF', function(event) {
 		event.sender.send('openedBF', filename)
 	})
 })
-autoUpdater.on('error', function(error) {
-	dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
-})
-autoUpdater.on('update-available', function() {
-	dialog.showMessageBox(mainWindow,{
-		type: 'none',
-		title: 'Mise à jour',
-		message: "Une nouvelle version est disponible, voulez-vous la télécharger et l'installer maintenant ?",
-		buttons: ['oui', 'non'],
-		cancelId: 1,
-		noLink: true
-	},
-	function(buttonIndex)  {
-		if (buttonIndex === 0) {
-			autoUpdater.downloadUpdate()
-		}
-		else {
-			return
-		}
-	})
-})
-autoUpdater.on('update-not-available', function() {
-	dialog.showMessageBox(mainWindow,{
-		title: 'Mise à jour',
-		message: 'Votre version est à jour.'
-	})
-})
-autoUpdater.on('update-downloaded', function() {
-	dialog.showMessageBox(mainWindow,{
-		title: 'Mise à jour',
-		message: "Téléchargement terminé, l'application va s'installer puis redémarrer..."
-	}, function() {
-		setImmediate(function(){
-			autoUpdater.quitAndInstall()
-		})
-	})
-})
+
+
+
 module.exports.open_console = open_console
 module.exports.refresh = refresh
